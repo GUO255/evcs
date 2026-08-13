@@ -1,0 +1,46 @@
+{
+  "name": "evcs",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "env:generate": "bun ops/environment/scripts/environment-files.ts generate",
+    "env:contract:check": "bun ops/environment/scripts/environment-files.ts check && bun ops/environment/scripts/scan-runtime-env-usage.ts",
+    "auth:owner:create": "bun --env-file=ops/.env.development.local ops/auth/manage-owner.ts create",
+    "auth:owner:repair": "bun --env-file=ops/.env.development.local ops/auth/manage-owner.ts repair",
+    "auth:owner:create:production": "bun --no-env-file ops/auth/manage-owner.ts create",
+    "auth:owner:repair:production": "bun --no-env-file ops/auth/manage-owner.ts repair",
+    "db:migrate": "bun --no-env-file ops/database/migrate.ts",
+    "db:migrate:core": "EVCS_MIGRATION_SCOPE=core bun --no-env-file ops/database/migrate.ts",
+    "db:migrate:site-selection": "EVCS_MIGRATION_SCOPE=site-selection bun --no-env-file ops/database/migrate.ts",
+    "db:dev:start": "bun ops/database/manage-development.ts start",
+    "db:dev:stop": "bun ops/database/manage-development.ts stop",
+    "db:dev:migrate": "bun ops/database/manage-development.ts migrate",
+    "docker:build:production": "bash ops/deploy/scripts/build-images.sh",
+    "ack:render:production": "bun ops/deploy/scripts/render-ack-release.ts",
+    "legacy-site-selection:dev": "bun ops/site-selection/scripts/materialize-environment.ts development && bun ops/site-selection/scripts/dev.ts",
+    "legacy-site-selection:stop": "bun ops/site-selection/scripts/stop.ts",
+    "setup:site-selection:titiler": "bun ops/site-selection/scripts/setup-titiler.ts",
+    "dev": "bun ops/pm2/manage-development.ts start",
+    "dev:restart": "bun ops/pm2/manage-development.ts restart",
+    "dev:stop": "bun ops/pm2/manage-development.ts stop",
+    "dev:logs": "bun ops/pm2/manage-development.ts logs",
+    "dev:status": "bun ops/pm2/manage-development.ts status"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "mysql2": "^3.22.6"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.29.7",
+    "@types/bun": "latest",
+    "pm2": "^6.0.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

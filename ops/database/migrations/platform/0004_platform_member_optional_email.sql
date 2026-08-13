@@ -1,0 +1,2 @@
+ALTER TABLE `platform_member`
+  MODIFY COLUMN `email` VARCHAR(255) NULL DEFAULT NULL COMMENT '联系邮箱（可选）';

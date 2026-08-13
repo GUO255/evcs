@@ -1,0 +1,1 @@
+CREATE INDEX `idx_oauth_refresh_revoked_expires_at` ON `auth_platform_oauth_refresh_token` (`revoked`,`expires_at`);

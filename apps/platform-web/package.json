@@ -1,0 +1,7 @@
+{
+  "name": "@evcs/platform-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "bun --watch src/index.ts" }
+}

@@ -1,0 +1,67 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.env.production
+.env.test
+!ops/.env.production
+
+# Local database credentials
+ops/database/env/*.env
+ops/.env.backup/
+
+# Generated role snapshots
+ops/.env.generated/
+
+# caches
+.eslintcache
+.cache
+ops/site-selection/titiler/.venv/
+.swc/
+*.tsbuildinfo
+.worktrees/
+.superpowers/
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+.gstack/
+
+# Local WeChat DevTools settings
+apps/driver-miniapp/project.private.config.json
+.codex_tmp
+.playwright-cli
+
+# Local Compose credentials
+ops/deploy/production/compose.config
+ops/deploy/production/k8s/evcs-environment.yaml
+ops/deploy/ack/.generated/
+ops/.release/
+
+deploy
+.codex
+.env.development.local2
+
+# project-local PM2 daemon (coexistence with other EVCS instances)
+.pm2/
