@@ -1,0 +1,55 @@
+# ===========================================================================
+# EVCS Gitee Go 流水线：dev / test / prod 三环境一键部署
+#
+# 接入前置（在 Gitee Go 控制台完成）：
+#   1. 确认代码已托管在 Gitee；
+#   2. 为目标环境主机创建 SSH「主机组」（如 dev-hosts / test-hosts / prod-hosts）；
+#   3. 在流水线「触发设置」中按分支绑定：
+#         dev  分支  → 触发本项目  → deploy@dev 主机组
+#         test 分支  → 触发本项目  → deploy@test 主机组
+#        main 分支或 release 标签 → 触发本项目 → deploy@prod 主机组
+#   4. 在各主机上放好 ops/gitee-deploy/.env.<env>，配置仓库 git 凭据，并安装 bun/docker。
+#
+# 触发后，deploy@host 会在目标主机执行 ops/gitee-deploy/deploy.sh <env>。
+# ===========================================================================
+name: evcs-deploy
+
+stages:
+  - stage: deploy_dev
+    displayName: 部署开发环境(dev)
+    steps:
+      - step: deploy@host
+        name: deploy_dev
+        displayName: dev 一键部署
+        trigger: auto
+        strategy: fast
+        # hostGroupID: dev-hosts   # 在 Gitee Go 控制台创建后填入
+        script: |
+          cd $WORKSPACE
+          bash ops/gitee-deploy/deploy.sh dev
+
+  - stage: deploy_test
+    displayName: 部署测试环境(test)
+    steps:
+      - step: deploy@host
+        name: deploy_test
+        displayName: test 一键部署
+        trigger: auto
+        strategy: fast
+        # hostGroupID: test-hosts  # 在 Gitee Go 控制台创建后填入
+        script: |
+          cd $WORKSPACE
+          bash ops/gitee-deploy/deploy.sh test
+
+  - stage: deploy_prod
+    displayName: 部署生产环境(prod, 需人工确认)
+    steps:
+      - step: deploy@host
+        name: deploy_prod
+        displayName: prod 一键部署
+        trigger: manual      # 生产建议人工确认后再点「执行」
+        strategy: fast
+        # hostGroupID: prod-hosts  # 在 Gitee Go 控制台创建后填入
+        script: |
+          cd $WORKSPACE
+          bash ops/gitee-deploy/deploy.sh prod

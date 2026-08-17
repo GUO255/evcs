@@ -13,6 +13,9 @@ logs
 *.tsbuildinfo
 
 ops/.env.generated
+.env
+.env.*
+!ops/gitee-deploy/.env.*.example
 ops/.release
 ops/deploy/ack/.generated
 ops/database/env/**

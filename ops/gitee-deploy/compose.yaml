@@ -1,0 +1,110 @@
+# EVCS「核心套件」三环境通用 Compose 骨架
+# 通过 --env-file 传入对应环境变量：.env.dev / .env.test / .env.prod
+# 用法：
+#   docker compose -f ops/gitee-deploy/compose.yaml --env-file ops/gitee-deploy/.env.dev up -d --build
+#
+# 架构说明：
+#   - 每套环境一份 compose；数据库「共享实例分库」(evcs_dev / evcs_test / evcs_prod)
+#   - 若使用外部共享 MySQL，请把 MYSQL_HOST 指到外部地址并把本文件 mysql 服务注释掉
+#   - 生产只暴露 80(web)，后端服务默认不暴露公网端口（按需放开）
+# ===========================================================================
+name: evcs-${ENV_NAME:-local}
+
+services:
+  # ---- 共享 MySQL 实例（可选：无外部 RDS 时在每台主机自建）----
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD required}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?MYSQL_DATABASE required}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - evcs-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # ---- 前端 ----
+  platform-web:
+    build:
+      context: ..
+      dockerfile: ops/gitee-deploy/images/web.Dockerfile
+      args:
+        PUBLIC_TIANDITU_TOKEN: ${PUBLIC_TIANDITU_TOKEN:-}
+        PUBLIC_AMAP_KEY: ${PUBLIC_AMAP_KEY:-}
+        PUBLIC_AMAP_SECURITY_JS_CODE: ${PUBLIC_AMAP_SECURITY_JS_CODE:-}
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:8080"
+    depends_on:
+      - platform-web-bff
+
+  # ---- 主 BFF（连 MySQL，本地文件存储走命名卷）----
+  platform-web-bff:
+    build:
+      context: ..
+      dockerfile: ops/gitee-deploy/images/service.Dockerfile
+      args:
+        APP_NAME: platform-web-bff
+    restart: unless-stopped
+    environment:
+      PLATFORM_WEB_BFF_DATABASE_URL: ${PLATFORM_WEB_BFF_DATABASE_URL:-mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}}
+    volumes:
+      - evcs-state:/usr/src/evcs/ops/.state
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ---- 认证服务（连 MySQL）----
+  auth-service:
+    build:
+      context: ..
+      dockerfile: ops/gitee-deploy/images/service.Dockerfile
+      args:
+        APP_NAME: auth-service
+    restart: unless-stopped
+    environment:
+      AUTH_MYSQL_URL: ${AUTH_MYSQL_URL:-mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}}
+      AUTH_PLATFORM_WEB_ORIGIN: ${AUTH_PLATFORM_WEB_ORIGIN:-http://localhost:${WEB_PORT}}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ---- 平台服务（占位/接入，无数据库强依赖）----
+  platform-service:
+    build:
+      context: ..
+      dockerfile: ops/gitee-deploy/images/service.Dockerfile
+      args:
+        APP_NAME: platform-service
+    restart: unless-stopped
+    ports:
+      - "${PLATFORM_PORT:-3230}:3230"
+
+  # ---- 充电服务（mock provider）----
+  # 注意：源码入口绑定 127.0.0.1，容器外端口映射需开启 hostname 0.0.0.0 才生效
+  charging-service:
+    build:
+      context: ..
+      dockerfile: ops/gitee-deploy/images/service.Dockerfile
+      args:
+        APP_NAME: charging-service
+    restart: unless-stopped
+    environment:
+      CHARGING_SERVICE_PORT: "3241"
+    ports:
+      - "${CHARGING_PORT:-3241}:3241"
+
+volumes:
+  evcs-mysql-data:
+  evcs-state:
