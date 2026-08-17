@@ -46,7 +46,7 @@ on:
 jobs:
   # ---- 环境矩阵解析 ----
   resolve-env:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       env_name: ${{ steps.set.outputs.env_name }}
       host: ${{ steps.set.outputs.host }}
@@ -95,7 +95,7 @@ jobs:
   # ---- 部署任务 ----
   deploy:
     needs: resolve-env
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment:
       name: ${{ needs.resolve-env.outputs.env_name }}
       url: http://${{ needs.resolve-env.outputs.host }}:${{ needs.resolve-env.outputs.env_name == 'prod' && '80' || (needs.resolve-env.outputs.env_name == 'test' && '8082' || '8081') }}
