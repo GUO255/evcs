@@ -1,17 +1,17 @@
 import { createChargingServiceHandler } from './app'
 import { MockChargingProvider } from './providers/mock-provider'
 
-const port = parsePort(process.env.PORT ?? process.env.CHARGING_SERVICE_PORT ?? '3241')
+const port = parsePort(process.env.CHARGING_SERVICE_PORT ?? '3241')
 const provider = new MockChargingProvider()
 const handler = createChargingServiceHandler({ provider })
 
 const server = Bun.serve({
   port,
-  hostname: '0.0.0.0',
+  hostname: '127.0.0.1',
   fetch: handler,
 })
 
-console.log(`[charging-service] listening on http://0.0.0.0:${server.port} (mock provider)`)
+console.log(`[charging-service] listening on http://127.0.0.1:${server.port} (mock provider)`)
 
 function parsePort(value: string): number {
   if (!/^\d+$/.test(value)) throw new Error('CHARGING_SERVICE_PORT must be an integer')
