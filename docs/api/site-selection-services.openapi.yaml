@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: EVCS Site Selection Services
+  version: 0.0.0
+  description: 选址服务与旧站点选择 Web 的占位健康检查。
+servers:
+  - url: http://127.0.0.1:3260
+tags:
+  - name: SiteSelectionV2
+  - name: SiteSelectionLegacy
+paths:
+  /health:
+    get:
+      tags: [SiteSelectionV2]
+      summary: 选址 V2 服务健康检查
+      responses:
+        "200": { description: OK }

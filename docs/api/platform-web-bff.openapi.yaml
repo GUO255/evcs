@@ -1,0 +1,793 @@
+openapi: 3.1.0
+info:
+  title: EVCS Platform Web BFF
+  version: 0.0.0
+  description: 平台 Web BFF 与本地业务网关。站点选择业务同时通过 /api/intelligent-site-selection/* 和 /gateway/site-selection/api/intelligent-site-selection/* 暴露。
+servers:
+  - url: http://127.0.0.1:3240
+tags:
+  - name: PlatformBFF
+  - name: AccessControl
+  - name: SiteSelectionAnalysis
+  - name: SiteSelectionSites
+  - name: SiteSelectionTeams
+  - name: SiteSelectionInventory
+  - name: SiteSelectionDrawings
+  - name: SiteSelectionTraffic
+paths:
+  /health:
+    get:
+      tags: [PlatformBFF]
+      summary: 健康检查
+      responses:
+        "200": { description: OK }
+  /api/session:
+    get:
+      tags: [PlatformBFF]
+      summary: 获取当前平台会话
+      responses:
+        "200": { description: 已登录会话 }
+  /api/auth/logout:
+    post:
+      tags: [PlatformBFF]
+      summary: 退出登录
+      responses:
+        "200": { description: 退出结果 }
+  /gateway/platform/api/me:
+    get:
+      tags: [PlatformBFF]
+      summary: 获取当前平台成员身份
+      responses:
+        "200": { description: 成员身份与权限 }
+    patch:
+      tags: [PlatformBFF]
+      summary: 更新当前成员姓名
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [realName]
+              properties:
+                realName: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+        "400": { description: 请求参数不合法 }
+  /local-objects/{objectKey}:
+    get:
+      tags: [PlatformBFF]
+      summary: 读取本地对象
+      parameters:
+        - name: objectKey
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 文件内容 }
+    put:
+      tags: [PlatformBFF]
+      summary: 上传本地对象
+      parameters:
+        - name: objectKey
+          in: path
+          required: true
+          schema: { type: string }
+        - name: ticket
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 上传结果 }
+        "400": { description: 请求参数不合法 }
+  /gateway/platform/api/access-control/permissions:
+    get:
+      tags: [AccessControl]
+      summary: 权限目录
+      responses:
+        "200": { description: 权限分组列表 }
+  /gateway/platform/api/access-control/roles:
+    get:
+      tags: [AccessControl]
+      summary: 角色列表
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer }
+        - name: cursor
+          in: query
+          required: false
+          schema: { type: string }
+        - name: code
+          in: query
+          required: false
+          schema: { type: string }
+        - name: displayName
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: 角色列表 }
+    post:
+      tags: [AccessControl]
+      summary: 创建角色
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "201": { description: 创建成功 }
+        "400": { description: 请求参数不合法 }
+  /gateway/platform/api/access-control/roles/{roleId}:
+    patch:
+      tags: [AccessControl]
+      summary: 更新角色
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "200": { description: 更新结果 }
+    delete:
+      tags: [AccessControl]
+      summary: 删除角色
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204": { description: 删除成功 }
+  /gateway/platform/api/access-control/members:
+    get:
+      tags: [AccessControl]
+      summary: 成员列表
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer }
+        - name: cursor
+          in: query
+          required: false
+          schema: { type: string }
+        - name: status
+          in: query
+          required: false
+          schema: { type: string }
+        - name: roleId
+          in: query
+          required: false
+          schema: { type: string }
+        - name: searchField
+          in: query
+          required: false
+          schema: { type: string }
+        - name: searchValue
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: 成员列表 }
+    post:
+      tags: [AccessControl]
+      summary: 创建成员
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "201": { description: 创建成功 }
+        "400": { description: 请求参数不合法 }
+  /gateway/platform/api/access-control/members/{memberId}:
+    patch:
+      tags: [AccessControl]
+      summary: 更新成员
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "200": { description: 更新结果 }
+  /gateway/platform/api/access-control/members/{memberId}/status:
+    post:
+      tags: [AccessControl]
+      summary: 更新成员状态
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [active, disabled]
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/analysis/dashboard:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 分析看板
+      responses:
+        "200": { description: 看板数据 }
+  /api/intelligent-site-selection/analysis/map-sites:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 地图站点分析
+      responses:
+        "200": { description: 地图站点数据 }
+  /api/intelligent-site-selection/analysis/work-records:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 工作记录
+      responses:
+        "200": { description: 工作记录列表 }
+  /api/intelligent-site-selection/analysis/tasks/{taskId}:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 分析任务详情
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 任务详情 }
+        "404": { description: 任务不存在 }
+  /api/intelligent-site-selection/analysis/tasks/{taskId}/attempts:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 任务尝试记录
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 尝试记录 }
+  /api/intelligent-site-selection/analysis/tasks/{taskId}/chat:
+    post:
+      tags: [SiteSelectionAnalysis]
+      summary: 分析任务对话
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "200": { description: 对话回复 }
+  /api/intelligent-site-selection/analysis/sites/{siteId}/latest-task:
+    get:
+      tags: [SiteSelectionAnalysis]
+      summary: 获取站点最新分析任务
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 最新任务 }
+  /api/intelligent-site-selection/exploration-sites:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 勘探站点列表
+      responses:
+        "200": { description: 站点列表 }
+    post:
+      tags: [SiteSelectionSites]
+      summary: 创建勘探站点
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "201": { description: 创建成功 }
+        "400": { description: 请求参数不合法 }
+  /api/intelligent-site-selection/exploration-sites/drafts:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 创建勘探站点草稿
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "201": { description: 创建成功 }
+  /api/intelligent-site-selection/exploration-sites/filter-options:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 勘探站点筛选选项
+      responses:
+        "200": { description: 筛选选项 }
+  /api/intelligent-site-selection/exploration-sites/map:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 勘探站点地图数据
+      responses:
+        "200": { description: 地图数据 }
+  /api/intelligent-site-selection/exploration-sites/daily:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 勘探站点日报
+      responses:
+        "200": { description: 日报列表 }
+  /api/intelligent-site-selection/exploration-sites/export:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 导出勘探站点
+      responses:
+        "200": { description: 导出文件 }
+  /api/intelligent-site-selection/exploration-sites/bulk:
+    delete:
+      tags: [SiteSelectionSites]
+      summary: 批量删除勘探站点
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items: { type: string }
+      responses:
+        "204": { description: 删除成功 }
+        "400": { description: 请求参数不合法 }
+  /api/intelligent-site-selection/exploration-sites/boundary-snapshots:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 上传边界快照
+      responses:
+        "200": { description: 上传成功 }
+  /api/intelligent-site-selection/exploration-sites/location-snapshots:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 上传位置快照
+      responses:
+        "200": { description: 上传成功 }
+  /api/intelligent-site-selection/exploration-sites/nearby-station-snapshots:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 上传附近充电站快照
+      responses:
+        "200": { description: 上传成功 }
+  /api/intelligent-site-selection/exploration-sites/nearby-hotspot-area-snapshots:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 上传附近热点区域快照
+      responses:
+        "200": { description: 上传成功 }
+  /api/intelligent-site-selection/exploration-sites/distance-snapshots/{distanceType}:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 上传距离快照
+      parameters:
+        - name: distanceType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [highway-distance, arterial-road-distance]
+      responses:
+        "200": { description: 上传成功 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 勘探站点详情
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 站点详情 }
+        "404": { description: 站点不存在 }
+    patch:
+      tags: [SiteSelectionSites]
+      summary: 更新勘探站点
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "200": { description: 更新结果 }
+    delete:
+      tags: [SiteSelectionSites]
+      summary: 删除勘探站点
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204": { description: 删除成功 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/reanalyze:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 重新分析站点
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 分析结果 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/report.docx:
+    get:
+      tags: [SiteSelectionSites]
+      summary: 导出站点 Word 报告
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Word 文件 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/status:
+    patch:
+      tags: [SiteSelectionSites]
+      summary: 更新站点状态
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/contract-date:
+    patch:
+      tags: [SiteSelectionSites]
+      summary: 更新合同日期
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/construction:
+    patch:
+      tags: [SiteSelectionSites]
+      summary: 更新建设信息
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/uploads:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 创建文件上传会话
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "201": { description: 上传会话 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/uploads/complete:
+    post:
+      tags: [SiteSelectionSites]
+      summary: 完成文件上传会话
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 完成结果 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/images/{kind}/{objectKey}:
+    delete:
+      tags: [SiteSelectionSites]
+      summary: 删除站点图片
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: kind
+          in: path
+          required: true
+          schema: { type: string }
+        - name: objectKey
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 删除成功 }
+  /api/intelligent-site-selection/exploration-sites/{siteId}/attachments/{kind}/{objectKey}:
+    delete:
+      tags: [SiteSelectionSites]
+      summary: 删除站点附件
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: kind
+          in: path
+          required: true
+          schema: { type: string }
+        - name: objectKey
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 删除成功 }
+  /api/intelligent-site-selection/exploration-teams:
+    get:
+      tags: [SiteSelectionTeams]
+      summary: 勘探小组列表
+      responses:
+        "200": { description: 小组列表 }
+    post:
+      tags: [SiteSelectionTeams]
+      summary: 创建勘探小组
+      responses:
+        "201": { description: 创建成功 }
+  /api/intelligent-site-selection/exploration-teams/member-candidates:
+    get:
+      tags: [SiteSelectionTeams]
+      summary: 成员候选人
+      responses:
+        "200": { description: 候选人列表 }
+  /api/intelligent-site-selection/exploration-teams/{teamId}:
+    get:
+      tags: [SiteSelectionTeams]
+      summary: 勘探小组详情
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 小组详情 }
+    patch:
+      tags: [SiteSelectionTeams]
+      summary: 更新勘探小组
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/exploration-teams/{teamId}/status:
+    post:
+      tags: [SiteSelectionTeams]
+      summary: 更新小组状态
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+  /api/intelligent-site-selection/exploration-teams/{teamId}/members:
+    get:
+      tags: [SiteSelectionTeams]
+      summary: 小组成员列表
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 成员列表 }
+    post:
+      tags: [SiteSelectionTeams]
+      summary: 添加小组成员
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "201": { description: 添加成功 }
+  /api/intelligent-site-selection/exploration-teams/{teamId}/members/{memberId}:
+    delete:
+      tags: [SiteSelectionTeams]
+      summary: 移除小组成员
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: memberId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 移除成功 }
+  /api/intelligent-site-selection/inventory-stations:
+    get:
+      tags: [SiteSelectionInventory]
+      summary: 站点台账列表
+      responses:
+        "200": { description: 台账列表 }
+  /api/intelligent-site-selection/inventory-stations/map:
+    get:
+      tags: [SiteSelectionInventory]
+      summary: 站点台账地图数据
+      responses:
+        "200": { description: 地图数据 }
+  /api/intelligent-site-selection/inventory-stations/nearby:
+    get:
+      tags: [SiteSelectionInventory]
+      summary: 附近站点
+      responses:
+        "200": { description: 附近站点列表 }
+  /api/intelligent-site-selection/inventory-stations/bulk:
+    patch:
+      tags: [SiteSelectionInventory]
+      summary: 批量更新站点状态
+      responses:
+        "200": { description: 更新结果 }
+    delete:
+      tags: [SiteSelectionInventory]
+      summary: 批量删除站点
+      responses:
+        "204": { description: 删除成功 }
+  /api/intelligent-site-selection/inventory-stations/{stationId}:
+    get:
+      tags: [SiteSelectionInventory]
+      summary: 站点台账详情
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 站点详情 }
+        "404": { description: 站点不存在 }
+  /api/intelligent-site-selection/map-drawings:
+    get:
+      tags: [SiteSelectionDrawings]
+      summary: 地图绘制列表
+      responses:
+        "200": { description: 绘制列表 }
+    post:
+      tags: [SiteSelectionDrawings]
+      summary: 创建地图绘制
+      responses:
+        "201": { description: 创建成功 }
+  /api/intelligent-site-selection/map-drawings/{drawingId}:
+    patch:
+      tags: [SiteSelectionDrawings]
+      summary: 更新地图绘制
+      parameters:
+        - name: drawingId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 更新结果 }
+    delete:
+      tags: [SiteSelectionDrawings]
+      summary: 删除地图绘制
+      parameters:
+        - name: drawingId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 删除成功 }
+  /api/intelligent-site-selection/traffic/heatmap/daily-average:
+    get:
+      tags: [SiteSelectionTraffic]
+      summary: 日均车流热力图元数据
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema: { type: string }
+        - name: endDate
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: 热力图元数据 }
+  /api/intelligent-site-selection/traffic/tiles/daily-average/{dateRange}/v{version}/{z}/{x}/{y}.webp:
+    get:
+      tags: [SiteSelectionTraffic]
+      summary: 日均车流热力图瓦片
+      parameters:
+        - name: dateRange
+          in: path
+          required: true
+          schema: { type: string }
+        - name: version
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: z
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: x
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: y
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: WebP 瓦片 }
+  /api/intelligent-site-selection/traffic/daily-average-point:
+    get:
+      tags: [SiteSelectionTraffic]
+      summary: 日均车流点查询
+      parameters:
+        - name: longitude
+          in: query
+          required: true
+          schema: { type: number }
+        - name: latitude
+          in: query
+          required: true
+          schema: { type: number }
+      responses:
+        "200": { description: 点数据 }
+  /api/intelligent-site-selection/traffic/nearest-route-segment:
+    get:
+      tags: [SiteSelectionTraffic]
+      summary: 最近道路路段查询
+      parameters:
+        - name: longitude
+          in: query
+          required: true
+          schema: { type: number }
+        - name: latitude
+          in: query
+          required: true
+          schema: { type: number }
+        - name: searchRadiusMeters
+          in: query
+          required: false
+          schema: { type: number }
+        - name: routeRef
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: 路段数据 }

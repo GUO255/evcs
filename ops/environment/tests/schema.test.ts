@@ -13,6 +13,7 @@ describe("environment schema", () => {
     expect(activeEnvironmentRoles).toContain("platform-web-bff");
     expect(keysByRole["platform-web-bff"]).toEqual([
       "NODE_ENV",
+      "EVCS_DATABASE_URL",
       "PLATFORM_WEB_ORIGIN",
       "PLATFORM_WEB_BFF_HOST",
       "PLATFORM_WEB_BFF_PORT",

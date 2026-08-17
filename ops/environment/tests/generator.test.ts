@@ -145,7 +145,7 @@ describe("environment generator", () => {
         PUBLIC_AMAP_SECURITY_JS_CODE: "amap-security-code",
       },
     });
-    expect(readFileSync(output, "utf8")).toContain("PORT=3120");
+    expect(readFileSync(output, "utf8")).toContain("PORT=3250");
     expect(readFileSync(output, "utf8")).toContain("PUBLIC_AMAP_KEY=amap-key");
     expect(statSync(output).mode & 0o777).toBe(0o600);
   });

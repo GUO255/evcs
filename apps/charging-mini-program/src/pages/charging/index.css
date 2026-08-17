@@ -1,0 +1,147 @@
+.charging-page {
+  min-height: 100vh;
+  padding: 26px 24px 40px;
+  box-sizing: border-box;
+  background: #f4f7fb;
+}
+
+.charging-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.charging-label {
+  display: block;
+  color: #7b8494;
+  font-size: 22px;
+}
+
+.charging-connector {
+  display: block;
+  margin-top: 6px;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.charging-status {
+  padding: 8px 16px;
+  background: #e7f8f2;
+  color: #06785a;
+  font-size: 24px;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.soc-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 360px;
+  height: 360px;
+  margin: 34px auto 30px;
+  border-radius: 50%;
+}
+
+.soc-ring-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 16px 40px rgba(10, 166, 121, 0.12);
+}
+
+.soc-value {
+  font-size: 72px;
+  font-weight: 800;
+  color: #0aa679;
+  line-height: 1;
+}
+
+.soc-label {
+  margin-top: 12px;
+  color: #7b8494;
+  font-size: 24px;
+}
+
+.charge-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.stat-item {
+  padding: 22px 8px;
+  background: #ffffff;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.stat-highlight {
+  background: linear-gradient(160deg, #0f8f6d, #0aa679);
+}
+
+.stat-highlight .stat-label,
+.stat-highlight .stat-unit {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.stat-highlight .stat-value {
+  color: #ffffff;
+}
+
+.stat-label {
+  display: block;
+  color: #7b8494;
+  font-size: 22px;
+}
+
+.stat-value {
+  display: block;
+  margin-top: 6px;
+  color: #17202a;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.stat-unit {
+  display: block;
+  margin-top: 4px;
+  color: #9ca3af;
+  font-size: 20px;
+}
+
+.charge-tip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 4px;
+  padding: 18px 20px;
+  background: #fff8ec;
+  border-radius: 18px;
+}
+
+.charge-tip-icon {
+  font-size: 28px;
+}
+
+.charge-tip-text {
+  flex: 1;
+  color: #92600a;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.stop-button {
+  background: #ef4444;
+  color: #ffffff;
+  border-radius: 18px;
+  font-size: 32px;
+  font-weight: 700;
+  padding: 18px;
+  box-shadow: 0 12px 28px rgba(239, 68, 68, 0.22);
+}

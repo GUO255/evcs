@@ -1,0 +1,31 @@
+{
+  "environment": "development",
+  "title": "EVCS 开发环境 Swagger",
+  "specs": [
+    {
+      "name": "auth-service.openapi.yaml",
+      "label": "Auth Service",
+      "description": "认证服务：CSRF、注册、登录、健康检查"
+    },
+    {
+      "name": "charging-service.openapi.yaml",
+      "label": "Charging Service",
+      "description": "充电小程序 C 端接口"
+    },
+    {
+      "name": "platform-service.openapi.yaml",
+      "label": "Platform Service",
+      "description": "平台服务占位接口"
+    },
+    {
+      "name": "platform-web-bff.openapi.yaml",
+      "label": "Platform Web BFF",
+      "description": "平台 Web BFF、RBAC、智能选址网关"
+    },
+    {
+      "name": "site-selection-services.openapi.yaml",
+      "label": "Site Selection Services",
+      "description": "智能选址 V2 服务占位接口"
+    }
+  ]
+}

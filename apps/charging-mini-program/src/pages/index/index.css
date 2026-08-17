@@ -1,0 +1,315 @@
+.home-page {
+  min-height: 100vh;
+  padding-bottom: 120px;
+  background: #f4f7fb;
+}
+
+.home-hero {
+  padding: 28px 28px 30px;
+  background: linear-gradient(160deg, #0f8f6d 0%, #0aa679 55%, #0cb98a 100%);
+  color: #ffffff;
+  border-radius: 0 0 32px 32px;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.hero-kicker {
+  display: block;
+  font-size: 22px;
+  opacity: 0.78;
+}
+
+.hero-title {
+  display: block;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hero-slogan {
+  font-size: 24px;
+  opacity: 0.86;
+}
+
+.search-row {
+  display: flex;
+  gap: 14px;
+}
+
+.search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 84px;
+  padding: 0 24px;
+  background: #ffffff;
+  border-radius: 42px;
+}
+
+.search-icon {
+  font-size: 38px;
+  color: #0aa679;
+}
+
+.search-input {
+  flex: 1;
+  height: 84px;
+  font-size: 26px;
+  color: #17202a;
+}
+
+.scan-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 84px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 18px;
+}
+
+.scan-icon {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.scan-text {
+  font-size: 18px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+}
+
+.quick-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.quick-label {
+  font-size: 20px;
+  color: #f0fdf9;
+}
+
+.map-preview {
+  position: relative;
+  height: 300px;
+  margin: 22px 24px 0;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #e9f2ee;
+}
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(10, 166, 121, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 166, 121, 0.10) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.map-pin {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -100%);
+}
+
+.pin-dot {
+  display: block;
+  font-size: 30px;
+}
+
+.map-center-pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  font-size: 40px;
+  transform: translate(-50%, -50%);
+}
+
+.map-hint {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  z-index: 4;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #4b5563;
+  font-size: 20px;
+  border-radius: 999px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 26px 28px 4px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.section-count {
+  color: #7b8494;
+  font-size: 22px;
+}
+
+.loading-tip {
+  margin: 24px 28px;
+  color: #7b8494;
+  font-size: 24px;
+}
+
+.station-card {
+  margin: 18px 24px 0;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.station-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.station-name-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.station-name {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.operator-tag {
+  padding: 4px 10px;
+  background: #e7f8f2;
+  color: #06785a;
+  font-size: 18px;
+  border-radius: 8px;
+}
+
+.station-distance {
+  color: #0aa679;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.station-address-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.station-address {
+  flex: 1;
+  color: #6b7280;
+  font-size: 22px;
+}
+
+.station-arrow {
+  color: #9ca3af;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.station-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.tag-pill {
+  padding: 7px 14px;
+  background: #f4f7fb;
+  color: #4b5563;
+  font-size: 20px;
+  border-radius: 999px;
+}
+
+.station-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.availability {
+  display: flex;
+  gap: 16px;
+}
+
+.availability-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot-fast {
+  background: #0aa679;
+}
+
+.dot-slow {
+  background: #38bdf8;
+}
+
+.availability-label {
+  color: #7b8494;
+  font-size: 20px;
+}
+
+.availability-value {
+  color: #17202a;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.station-price {
+  color: #0aa679;
+  font-size: 26px;
+  font-weight: 800;
+}

@@ -20,7 +20,13 @@
     "db:dev:start": "bun ops/database/manage-development.ts start",
     "db:dev:stop": "bun ops/database/manage-development.ts stop",
     "db:dev:migrate": "bun ops/database/manage-development.ts migrate",
+    "db:adminer": "bun ops/database/manage-adminer.ts start",
+    "db:adminer:stop": "bun ops/database/manage-adminer.ts stop",
+    "db:forward": "bun ops/database/manage-forward.ts start",
+    "db:forward:stop": "bun ops/database/manage-forward.ts stop",
+    "db:forward:status": "bun ops/database/manage-forward.ts status",
     "docker:build:production": "bash ops/deploy/scripts/build-images.sh",
+    "swagger:dev": "SWAGGER_ENV=development bun ops/swagger/serve.ts",
     "ack:render:production": "bun ops/deploy/scripts/render-ack-release.ts",
     "legacy-site-selection:dev": "bun ops/site-selection/scripts/materialize-environment.ts development && bun ops/site-selection/scripts/dev.ts",
     "legacy-site-selection:stop": "bun ops/site-selection/scripts/stop.ts",
@@ -29,7 +35,11 @@
     "dev:restart": "bun ops/pm2/manage-development.ts restart",
     "dev:stop": "bun ops/pm2/manage-development.ts stop",
     "dev:logs": "bun ops/pm2/manage-development.ts logs",
-    "dev:status": "bun ops/pm2/manage-development.ts status"
+    "dev:status": "bun ops/pm2/manage-development.ts status",
+    "charging-service:dev": "bun run --filter @evcs/charging-service dev",
+    "charging-service:test": "bun run --filter @evcs/charging-service test",
+    "charging-mini-program:dev": "bun run --filter @evcs/charging-mini-program dev:weapp",
+    "charging-mini-program:build": "bun run --filter @evcs/charging-mini-program build:weapp"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

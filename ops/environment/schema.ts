@@ -81,7 +81,7 @@ export const environmentVariables = {
   EVCS_DATABASE_URL: {
     description: "EVCS 共享 MySQL 连接地址",
     purpose: "配置EVCS 共享 MySQL 连接地址，供 database 配置域内的相关服务使用。",
-    roles: [...allActiveServerRoles, ...legacySiteSelectionServerRoles],
+    roles: [...allActiveServerRoles, "platform-web-bff", ...legacySiteSelectionServerRoles],
     scope: "database",
     sensitive: true,
     validation: "mysql-url",
@@ -93,6 +93,7 @@ export const environmentVariables = {
     aliases: {
       "auth-service": "AUTH_MYSQL_URL",
       "platform-service": "PLATFORM_MYSQL_URL",
+      "platform-web-bff": "PLATFORM_WEB_BFF_DATABASE_URL",
       "site-selection-v2-api": "SITE_SELECTION_V2_MYSQL_URL",
       "site-selection-v2-worker": "SITE_SELECTION_V2_MYSQL_URL",
       "site-selection-service-api": "DATABASE_URL",
@@ -115,7 +116,7 @@ export const environmentVariables = {
     },
     examples: { production: "https://evcs.hztgwm.com" },
     environments: {
-      development: { source: "stable", value: "http://127.0.0.1:3120" },
+      development: { source: "stable", value: "http://127.0.0.1:3250" },
       production: { source: "external-required" },
     },
   },
@@ -766,7 +767,7 @@ export const environmentVariables = {
     validation: "positive-integer",
     aliases: { "platform-web-build": "PORT" },
     environments: {
-      development: { source: "stable", value: "3120" },
+      development: { source: "stable", value: "3250" },
       production: { source: "runtime-managed" },
     },
   },

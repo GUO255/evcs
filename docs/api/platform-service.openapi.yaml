@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: EVCS Platform Service
+  version: 0.0.0
+  description: 平台服务当前为进程占位，仅暴露健康检查。
+servers:
+  - url: http://127.0.0.1:3230
+tags:
+  - name: Platform
+paths:
+  /health:
+    get:
+      tags: [Platform]
+      summary: 健康检查
+      responses:
+        "200":
+          description: OK

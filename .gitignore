@@ -65,3 +65,6 @@ deploy
 
 # project-local PM2 daemon (coexistence with other EVCS instances)
 .pm2/
+
+# project-local runtime state (pid files)
+ops/.state/

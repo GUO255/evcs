@@ -1,6 +1,6 @@
-# EVCS 开发工具
+# 极充智联 开发工具
 
-EVCS（Electric Vehicle Charging System）是一个电动汽车充电站运营平台。本仓库是该平台
+极充智联（内部代号 EVCS，Electric Vehicle Charging System）是一个电动汽车充电站运营平台。本仓库是该平台
 的开发工具链：采用 Bun Workspace 管理多个前端应用、后端服务和共享包，并统一维护环境契约、
 开发进程、数据库迁移与部署资产。
 
@@ -8,7 +8,7 @@ EVCS（Electric Vehicle Charging System）是一个电动汽车充电站运营�
 
 ```text
 evcs/
-├── apps/                         # 可独立运行和部署的应用（当前为占位进程，接入真实应用后无缝替换）
+├── apps/                         # 可独立运行和部署的应用（auth-web / platform-web 已接入真实前端）
 ├── packages/                     # 跨应用复用的共享包
 ├── ops/                          # 开发与运维工具链
 │   ├── environment/              # 环境变量契约：schema、解析、物化与扫描
@@ -33,9 +33,11 @@ evcs/
 ## 技术文档
 
 - [Web 端技术选型](docs/architecture/web-technology-selection.md)
+- [充电小程序方案与技术选型](docs/architecture/charging-mini-program-proposal.md)
 - [认证服务架构](docs/architecture/auth-service.md)
 - [Platform Access Token 契约](docs/contracts/access-token-claims.md)
 - [环境变量管理](docs/operations/environment-management.md)
+- [Swagger / OpenAPI 接口管理](docs/operations/swagger.md)
 
 安装依赖：
 
@@ -124,8 +126,9 @@ bun run auth:owner:repair
 
 ## 当前仓库的接入说明
 
-- `apps/` 内的进程占位符让工具链可以立即运行；将同名真实应用放入 `apps/<name>/`
-  后，环境契约、PM2 编排与 Owner 运维命令无需改动即可生效。
+- `apps/auth-web` 与 `apps/platform-web` 已接入真实前端：登录页
+  `http://127.0.0.1:3220`、平台前端 `http://127.0.0.1:3250`；其余后端应用仍为进程占位，
+  将同名真实应用放入 `apps/<name>/` 后，环境契约、PM2 编排与 Owner 运维命令无需改动即可生效。
 - 依赖业务应用源码的测试（Dockerfile、nginx、rsbuild、Owner 真实数据库等契约测试）
   不在本仓库内，随真实应用代码一并迁入。
 - 工具链自检命令：`bun run env:generate`、`bun run env:contract:check`、
@@ -144,3 +147,55 @@ PM2_HOME="$PWD/.pm2" bun run dev:stop
 
 TiTiler 固定使用 `127.0.0.1:8000`。端口被其它程序占用时该进程无法启动；若本机已有可用的
 TiTiler，可直接复用（与 `legacy-site-selection:dev` 的复用逻辑一致），无需在本实例再启动。
+
+`dev` / `dev:restart` / `dev:status` 执行结束后只打印前端页面地址：Auth 登录页
+`http://127.0.0.1:3220` 与平台前端 `http://127.0.0.1:3250`，并在 `Database (Docker)` 中显示
+MySQL 容器与 Adminer 的运行状态。其余后端进程仍在 PM2 表格中可见，不再单独列出访问地址。
+
+登录页使用用户名密码注册/登录（无验证码）：注册账号会写入开发库
+`dev_auth_credentials` 表（argon2 哈希），登录成功后跳转平台前端
+`http://127.0.0.1:3250`。
+
+开发环境下平台前端默认免认证：BFF 进程对 `/api/session` 返回已登录会话，对
+`/gateway/platform/api/me` 返回拥有全部平台权限的 `开发管理员` 身份，直接打开
+`http://127.0.0.1:3250` 即可进入平台，无需走登录页。
+
+## 本机数据库端口说明
+
+本机 `127.0.0.1:3306` 被一个 root 权限的既有隧道占用（转发到远程 MySQL 8.0，不是开发库），
+开发容器无法在宿主侧绑定该端口。当前开发库使用容器内 3306 并额外转发到宿主
+`127.0.0.1:3307`，由命令统一管理：
+
+```bash
+bun run db:forward          # 启动 127.0.0.1:3307 -> Colima:3306（幂等）
+bun run db:forward:status   # 查看转发状态
+bun run db:forward:stop     # 停止
+```
+
+宿主机数据库客户端（DataGrip/Navicat/DBeaver 等）连开发库时填写：主机 `127.0.0.1`、
+端口 `3307`、用户名 `evcs`、密码 `123456`、数据库 `evcs`。`mysql` / `mysql-development`
+是 Docker 网络内部别名，宿主机客户端无法解析；`3306` 是源 EVCS 的既有隧道
+（远程 MySQL 8.0），不是本开发库。
+
+`ops/.env.development.local` 中的 `EVCS_DATABASE_URL` 已指向 `127.0.0.1:3307/evcs`。
+`db:dev:start` / `db:dev:migrate` 两个命令与源项目一致、固定校验 `127.0.0.1:3306`，因此本机
+无法直接使用；迁移等价命令为：
+
+```bash
+bun --no-env-file --env-file=<含 EVCS_DATABASE_URL 的 env 文件> ops/database/migrate.ts
+```
+
+数据库可视化使用 Adminer（单容器 Web UI，`http://127.0.0.1:8081`），通过
+`database_default` 网络直连开发库。登录填写：服务器 `mysql`、用户名 `evcs`、
+密码 `123456`、数据库 `evcs`（密码为本机开发库密码，在
+`ops/.env.development.local` 的 `EVCS_DATABASE_URL` 中维护）。容器与 PM2 独立管理：
+
+```bash
+bun run db:adminer        # 启动（幂等）
+bun run db:adminer:stop   # 停止
+```
+
+`bun run dev:status` 的 Database 段落会同时显示 3307 转发是否 active。
+
+TiTiler 的 `127.0.0.1:8000` 当前由源 EVCS 实例提供，本实例不再重复启动该进程（与
+`legacy-site-selection:dev` 的复用逻辑一致）。

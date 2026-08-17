@@ -23,6 +23,8 @@ module.exports = {
     app("evcs-site-selection-v2-service", "development.site-selection-v2-api.env", ["run", "--filter", "@evcs/site-selection-v2-service", "dev"]),
     app("evcs-platform-web-bff", "development.platform-web-bff.env", ["run", "--filter", "@evcs/platform-web-bff", "dev"]),
     app("evcs-platform-web", "development.platform-web-build.env", ["run", "--filter", "@evcs/platform-web", "dev"]),
+    app("evcs-charging-service", "development.platform-web-bff.env", ["run", "--filter", "@evcs/charging-service", "dev"]),
+    app("evcs-charging-mini-program", "development.platform-web-build.env", ["run", "--filter", "@evcs/charging-mini-program", "dev:weapp"]),
     app("evcs-site-selection-worker", "development.site-selection-v2-worker.env", ["run", "--filter", "@evcs/site-selection-v2-service", "dev:worker"]),
     {
       name: "evcs-site-selection-titiler",

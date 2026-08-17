@@ -67,9 +67,9 @@ CREATE TABLE `platform_authorization_audit_event` (
 
 INSERT INTO `platform_role` (`id`, `name`, `description`, `built_in`, `created_at`, `updated_at`) VALUES
   (1, 'platform-super-admin', '拥有平台全部业务权限', 1, 0, 0),
-  (2, 'Operations', '负责用户、场站、活动和投诉建议运营', 0, 0, 0),
-  (3, 'Maintenance', '负责视频监控、设备告警和维修工单', 0, 0, 0),
-  (4, 'Finance', '负责财务数据查看、审核和商户结算', 0, 0, 0);
+  (2, '运营', '负责用户、场站、活动和投诉建议运营', 0, 0, 0),
+  (3, '运维', '负责视频监控、设备告警和维修工单', 0, 0, 0),
+  (4, '财务', '负责财务数据查看、审核和商户结算', 0, 0, 0);
 
 INSERT INTO `platform_role_permission` (`role_id`, `permission_code`, `created_at`) VALUES
   (1, 'merchants.view', 0),

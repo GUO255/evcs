@@ -1,0 +1,232 @@
+openapi: 3.1.0
+info:
+  title: EVCS Charging Service
+  version: 0.0.0
+  description: 充电小程序 C 端服务，当前使用 MockProvider，覆盖登录、车辆、储值、站点、充电会话与订单。
+servers:
+  - url: http://127.0.0.1:3241
+tags:
+  - name: ChargingMiniProgram
+paths:
+  /health:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 健康检查
+      responses:
+        "200": { description: OK }
+  /api/mini-program/login:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 小程序登录
+      responses:
+        "200": { description: 返回开发 Token 与用户信息 }
+  /api/mini-program/me:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 当前用户信息
+      responses:
+        "200": { description: 用户信息 }
+  /api/mini-program/wallet:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 钱包信息
+      responses:
+        "200": { description: 钱包信息 }
+  /api/mini-program/vehicles:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 车辆列表
+      responses:
+        "200": { description: 车辆列表 }
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 新增车辆
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plate, brand, model]
+              properties:
+                plate: { type: string }
+                brand: { type: string }
+                model: { type: string }
+      responses:
+        "201": { description: 创建成功 }
+        "400": { description: 请求参数不合法 }
+  /api/mini-program/vehicles/{vehicleId}:
+    delete:
+      tags: [ChargingMiniProgram]
+      summary: 删除车辆
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 删除结果 }
+  /api/mini-program/stored-value/orders:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 创建储值订单
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: number }
+      responses:
+        "201": { description: 创建成功 }
+        "400": { description: 请求参数不合法 }
+  /api/mini-program/stored-value/orders/{orderId}/pay:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 支付储值订单
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 支付结果 }
+        "404": { description: 订单不存在 }
+  /api/mini-program/stations:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 查询充电站
+      parameters:
+        - name: latitude
+          in: query
+          required: false
+          schema: { type: number }
+        - name: longitude
+          in: query
+          required: false
+          schema: { type: number }
+        - name: keyword
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: 充电站列表 }
+  /api/mini-program/stations/{stationId}:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 充电站详情
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 充电站详情 }
+        "404": { description: 充电站不存在 }
+  /api/mini-program/stations/{stationId}/connectors:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 充电枪列表
+      parameters:
+        - name: stationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 充电枪列表 }
+  /api/mini-program/charge/sessions:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 启动充电
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [connectorId]
+              properties:
+                connectorId: { type: string }
+      responses:
+        "201": { description: 充电会话已创建 }
+        "409": { description: 启动失败 }
+  /api/mini-program/charge/sessions/{sessionId}:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 查询充电会话
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 会话详情 }
+        "404": { description: 会话不存在 }
+  /api/mini-program/charge/sessions/{sessionId}/stop:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 停止充电
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 已停止 }
+        "404": { description: 会话不存在 }
+  /api/mini-program/orders:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 订单列表
+      responses:
+        "200": { description: 订单列表 }
+  /api/mini-program/orders/{orderId}:
+    get:
+      tags: [ChargingMiniProgram]
+      summary: 订单详情
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 订单详情 }
+        "404": { description: 订单不存在 }
+  /api/mini-program/orders/{orderId}/pay:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 支付订单
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [paymentMethod]
+              properties:
+                paymentMethod:
+                  type: string
+                  enum: [balance, wechat]
+      responses:
+        "200": { description: 支付结果 }
+        "404": { description: 订单不存在 }
+        "409": { description: 支付失败 }
+  /api/mini-program/orders/{orderId}/refund:
+    post:
+      tags: [ChargingMiniProgram]
+      summary: 订单退款
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: 退款结果 }
+        "404": { description: 订单不存在 }

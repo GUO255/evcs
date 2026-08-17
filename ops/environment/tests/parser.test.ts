@@ -94,7 +94,8 @@ describe("environment parser", () => {
 
   test("accepts non-loopback Redis for the development BFF role", () => {
     const source = parseSnapshot(renderRoleSnapshot("development", "platform-web-bff", {
-      PLATFORM_WEB_ORIGIN: "http://127.0.0.1:3120",
+      EVCS_DATABASE_URL: "mysql://evcs:password@127.0.0.1:3306/evcs",
+      PLATFORM_WEB_ORIGIN: "http://127.0.0.1:3250",
       PLATFORM_WEB_BFF_AUTH_ISSUER: "http://127.0.0.1:3200/platform",
       PLATFORM_WEB_BFF_OAUTH_CLIENT_SECRET: "bff-oauth-client-secret-32-characters",
       PLATFORM_WEB_BFF_REDIS_URL: "redis://redis.internal:6379/0",
@@ -109,6 +110,7 @@ describe("environment parser", () => {
 
   test("accepts Redis without TLS for the production BFF role", () => {
     const source = parseSnapshot(renderRoleSnapshot("production", "platform-web-bff", {
+      EVCS_DATABASE_URL: "mysql://evcs:password@rds.internal:3306/evcs",
       PLATFORM_WEB_ORIGIN: "https://evcs.example.com",
       PLATFORM_WEB_BFF_AUTH_ISSUER: "https://auth.example.com/platform",
       PLATFORM_WEB_BFF_OAUTH_CLIENT_SECRET: "bff-oauth-client-secret-32-characters",
@@ -148,7 +150,7 @@ function validAuthRuntime(): Record<string, string> {
   return {
     NODE_ENV: "development",
     AUTH_MYSQL_URL: "mysql://evcs:secret@127.0.0.1:3306/evcs",
-    AUTH_PLATFORM_WEB_ORIGIN: "http://127.0.0.1:3120",
+    AUTH_PLATFORM_WEB_ORIGIN: "http://127.0.0.1:3250",
     AUTH_INTERNAL_PROVISIONING_SECRET: "provisioning-secret",
     AUTH_PLATFORM_WEB_BFF_CLIENT_SECRET: "platform-web-bff-client-secret",
     AUTH_HOST: "127.0.0.1",
