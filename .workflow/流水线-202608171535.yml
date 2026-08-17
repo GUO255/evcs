@@ -1,8 +1,0 @@
-version: '1.0'
-name: 流水线-202608171535
-displayName: 流水线-202608171535
-triggers:
-  push:
-    branches:
-      prefix:
-        - ''
