@@ -1,0 +1,117 @@
+.vehicles-page {
+  min-height: 100vh;
+  padding-bottom: 60px;
+  background: #f4f7fb;
+}
+
+.vehicles-hero {
+  padding: 30px 28px;
+  background: linear-gradient(160deg, #0f8f6d, #0aa679);
+  color: #ffffff;
+}
+
+.vehicles-hero-title {
+  display: block;
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.vehicles-hero-sub {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 22px;
+}
+
+.vehicle-list {
+  margin: 22px 24px 0;
+}
+
+.vehicle-empty {
+  padding: 50px 20px;
+  color: #9ca3af;
+  font-size: 24px;
+  text-align: center;
+}
+
+.vehicle-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding: 22px 24px;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.vehicle-avatar {
+  font-size: 46px;
+}
+
+.vehicle-info {
+  flex: 1;
+}
+
+.plate {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.vehicle-desc {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 22px;
+}
+
+.remove-button {
+  margin: 0;
+  padding: 10px 20px;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: 14px;
+  font-size: 22px;
+}
+
+.form-card {
+  margin: 28px 24px 0;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.form-title {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.form-label {
+  display: block;
+  margin: 14px 4px 8px;
+  color: #6b7280;
+  font-size: 22px;
+}
+
+.form-input {
+  height: 80px;
+  padding: 0 22px;
+  background: #f8fafc;
+  border: 2px solid #e8edf2;
+  border-radius: 16px;
+  font-size: 26px;
+}
+
+.save-button {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #10b981, #0aa679);
+  color: #ffffff;
+  border-radius: 16px;
+  font-size: 28px;
+  font-weight: 700;
+  padding: 16px;
+}

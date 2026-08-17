@@ -1,0 +1,22 @@
+CREATE TABLE site_inventory_station (
+  id                                      BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT COMMENT '主键',
+  sequence_number                         INT UNSIGNED     NOT NULL DEFAULT 0 COMMENT '站点序号',
+  station_name                            VARCHAR(128)     NOT NULL DEFAULT '' COMMENT '站点名称',
+  provincial_city                         VARCHAR(64)      NOT NULL DEFAULT '' COMMENT '省辖市',
+  county_district                         VARCHAR(64)      NOT NULL DEFAULT '' COMMENT '所在县（区）',
+  route_name                              VARCHAR(128)     NOT NULL DEFAULT '' COMMENT '所在线路',
+  specific_location                       VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '具体地点',
+  facility_type                           VARCHAR(64)      NOT NULL DEFAULT '' COMMENT '设施类型',
+  site_type                               TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '站点类型：1规划点位 2原规划调整点位 3补充点位',
+  status                                  TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '建设状态：1已签约 2已开工 3已完工',
+  daily_truck_traffic_2025                INT UNSIGNED     NOT NULL DEFAULT 0 COMMENT '2025年日均断面交通量（货车）',
+  daily_medium_heavy_truck_traffic_2025   INT UNSIGNED     NOT NULL DEFAULT 0 COMMENT '2025年日均断面交通量（中重型货车）',
+  remark                                  VARCHAR(1000)    NOT NULL DEFAULT '' COMMENT '备注',
+  created_at                              INT UNSIGNED     NOT NULL DEFAULT 0 COMMENT '创建时间（Unix 时间戳）',
+  updated_at                              INT UNSIGNED     NOT NULL DEFAULT 0 COMMENT '更新时间（Unix 时间戳）',
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_sequence_number (sequence_number),
+  KEY idx_provincial_city (provincial_city),
+  KEY idx_county_district (county_district),
+  KEY idx_site_type_status (site_type, status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='117站点信息表';

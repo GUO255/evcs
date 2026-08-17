@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EVCS API Swagger 管理台</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f6f8fa; color: #1f2933; }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 14px 20px; background: #0f172a; color: white; box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+    header h1 { margin: 0; font-size: 18px; }
+    header p { margin: 4px 0 0; font-size: 12px; color: #cbd5e1; }
+    .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .toolbar select {
+      min-width: 280px; padding: 9px 12px; border-radius: 8px; border: 1px solid #334155;
+      background: #1e293b; color: white; font-size: 14px;
+    }
+    .toolbar a {
+      color: #93c5fd; font-size: 13px; text-decoration: none; white-space: nowrap;
+    }
+    .toolbar a:hover { text-decoration: underline; }
+    .env-badge {
+      padding: 5px 9px; border-radius: 999px; background: #14532d; color: #86efac;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+    }
+    #swagger-ui { padding: 12px 20px 40px; min-height: 60vh; }
+    .error-box {
+      margin: 40px 20px; padding: 20px; border-radius: 10px; background: #fef2f2; color: #b91c1c;
+      border: 1px solid #fecaca; font-size: 14px; line-height: 1.6;
+    }
+    @media (max-width: 760px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .toolbar { width: 100%; }
+      .toolbar select { flex: 1; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 id="page-title">EVCS API Swagger 管理台</h1>
+      <p id="page-subtitle">统一查看各服务的 OpenAPI 接口文档</p>
+    </div>
+    <div class="toolbar">
+      <span id="env-badge" class="env-badge">development</span>
+      <select id="spec-select" aria-label="选择服务文档"></select>
+      <a id="raw-link" href="#" target="_blank" rel="noreferrer">查看 YAML</a>
+    </div>
+  </header>
+  <main>
+    <div id="status"></div>
+    <div id="swagger-ui"></div>
+  </main>
+
+  <script>
+    const select = document.getElementById("spec-select");
+    const rawLink = document.getElementById("raw-link");
+    const statusBox = document.getElementById("status");
+    const swaggerDom = document.getElementById("swagger-ui");
+    const pageTitle = document.getElementById("page-title");
+    const pageSubtitle = document.getElementById("page-subtitle");
+    const envBadge = document.getElementById("env-badge");
+    let currentPath = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showError(message) {
+      swaggerDom.innerHTML = "";
+      statusBox.innerHTML = `<div class="error-box">${message}</div>`;
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`无法加载 ${src}`));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensureSwaggerBundle() {
+      if (window.SwaggerUIBundle) return;
+      const sources = [
+        "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+        "https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js",
+      ];
+      for (const src of sources) {
+        try {
+          await loadScript(src);
+          if (window.SwaggerUIBundle) return;
+        } catch {
+          // try next CDN
+        }
+      }
+      throw new Error("Swagger UI CDN 加载失败，请检查网络或改用可访问的 CDN。");
+    }
+
+    function renderSwagger(path) {
+      swaggerDom.innerHTML = "";
+      window.ui = window.SwaggerUIBundle({
+        url: path,
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        displayRequestDuration: true,
+        docExpansion: "list",
+        filter: true,
+        persistAuthorization: true,
+      });
+      currentPath = path;
+      rawLink.href = path;
+    }
+
+    async function loadSelected(path) {
+      try {
+        await ensureSwaggerBundle();
+        if (path === currentPath) return;
+        renderSwagger(path);
+      } catch (error) {
+        showError(String(error.message || error));
+      }
+    }
+
+    async function boot() {
+      try {
+        const response = await fetch("/specs.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("读取接口文档目录失败。");
+        const data = await response.json();
+        const specs = Array.isArray(data.specs) ? data.specs : [];
+        const environment = String(data.environment || "development");
+
+        if (specs.length === 0) {
+          showError("未找到 OpenAPI 文档，请确认 <code>docs/api/*.openapi.yaml</code> 存在。");
+          return;
+        }
+
+        pageTitle.textContent = data.title || "EVCS API Swagger 管理台";
+        pageSubtitle.textContent = `当前环境：${environment}`;
+        envBadge.textContent = environment;
+        document.title = `${pageTitle.textContent} · ${environment}`;
+
+        select.innerHTML = specs
+          .map((spec) => {
+            const label = spec.label || spec.name;
+            const description = spec.description ? ` title="${escapeHtml(spec.description)}"` : "";
+            return `<option value="${escapeHtml(spec.path)}"${description}>${escapeHtml(label)}</option>`;
+          })
+          .join("");
+
+        select.addEventListener("change", () => loadSelected(select.value));
+        await loadSelected(specs[0].path);
+      } catch (error) {
+        showError(String(error.message || error));
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>

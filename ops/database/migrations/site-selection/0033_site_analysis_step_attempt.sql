@@ -1,0 +1,22 @@
+CREATE TABLE `site_analysis_step_attempt` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `step_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '分析步骤主键',
+  `attempt_number` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '步骤模型调用尝试序号',
+  `provider` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '模型供应商编码',
+  `model` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '模型名称',
+  `prompt_version` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Prompt版本',
+  `input_checksum` CHAR(64) NOT NULL DEFAULT '' COMMENT '分析输入SHA-256校验值',
+  `input_tokens` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '输入Token数',
+  `output_tokens` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '输出Token数',
+  `total_tokens` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '总Token数',
+  `duration_ms` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '模型调用耗时（毫秒）',
+  `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '尝试状态：1执行中 2已完成 3失败',
+  `error_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '模型调用错误码',
+  `redacted_error_message` VARCHAR(1000) NOT NULL DEFAULT '' COMMENT '已脱敏模型调用错误信息',
+  `started_at` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '模型调用开始时间（Unix 时间戳）',
+  `completed_at` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '模型调用完成时间（Unix 时间戳）',
+  `created_at` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间（Unix 时间戳）',
+  `updated_at` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间（Unix 时间戳）',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_site_analysis_step_attempt_number` (`step_id`, `attempt_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='勘探站点分析步骤模型调用尝试';

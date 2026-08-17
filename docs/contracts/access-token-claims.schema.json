@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evcs.com/contracts/access-token-claims.schema.json",
+  "title": "EVCS Platform access-token claims",
+  "description": "Language-neutral contract for JWT access tokens issued by the EVCS Platform Authentication Domain.",
+  "type": "object",
+  "required": ["iss", "sub", "aud", "azp", "scope", "iat", "exp", "auth_domain"],
+  "properties": {
+    "iss": {
+      "type": "string",
+      "pattern": "^https://.+/platform$",
+      "description": "Exact configured PLATFORM_AUTH_ISSUER; production configuration requires HTTPS and the /platform path."
+    },
+    "sub": { "type": "string", "minLength": 1 },
+    "aud": {
+      "description": "The first-party Platform API resource, optionally paired with the issuer userinfo audience for an OpenID request.",
+      "oneOf": [
+        { "const": "platform-service" },
+        {
+          "type": "array",
+          "allOf": [
+            { "contains": { "const": "platform-service" }, "minContains": 1, "maxContains": 1 },
+            { "contains": { "type": "string", "pattern": "^https://.+/platform/oauth2/userinfo$" }, "minContains": 1, "maxContains": 1 }
+          ],
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        }
+      ]
+    },
+    "azp": { "const": "platform-web-bff" },
+    "scope": { "const": "platform:read site-selection:read site-selection:write offline_access" },
+    "iat": { "type": "integer" },
+    "exp": { "type": "integer" },
+    "auth_domain": {
+      "description": "EVCS Authentication Domain; it is not a Better Auth Realm.",
+      "const": "platform"
+    },
+    "sid": { "type": "string" }
+  },
+  "examples": [
+    {
+      "iss": "https://auth.example.com/platform",
+      "sub": "018f4d31-40c8-7f2d-a15b-4cb95165f6d1",
+      "aud": ["platform-service", "https://auth.example.com/platform/oauth2/userinfo"],
+      "azp": "platform-web-bff",
+      "scope": "platform:read site-selection:read site-selection:write offline_access",
+      "auth_domain": "platform",
+      "iat": 1783814400,
+      "exp": 1783815300
+    }
+  ]
+}

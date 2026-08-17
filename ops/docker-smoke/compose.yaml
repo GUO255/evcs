@@ -1,0 +1,18 @@
+name: evcs-docker-smoke
+
+services:
+  platform-web:
+    build:
+      context: ../..
+      dockerfile: ops/docker-smoke/platform-web.Dockerfile
+      args:
+        PUBLIC_TIANDITU_TOKEN: ${PUBLIC_TIANDITU_TOKEN:-}
+        PUBLIC_AMAP_KEY: ${PUBLIC_AMAP_KEY:-smoke-amap-key}
+        PUBLIC_AMAP_SECURITY_JS_CODE: ${PUBLIC_AMAP_SECURITY_JS_CODE:-smoke-amap-security}
+    environment:
+      BFF_ORIGIN: http://host.docker.internal:3240
+    ports:
+      - "18080:8080"
+    volumes:
+      - ./serve-static.ts:/srv/serve-static.ts
+    restart: unless-stopped

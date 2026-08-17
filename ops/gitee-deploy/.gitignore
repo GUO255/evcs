@@ -1,0 +1,5 @@
+# 真实环境变量不入库，模板 .env.*.example 需保留
+.env.dev
+.env.test
+.env.prod
+!

@@ -1,0 +1,1 @@
+CREATE INDEX `idx_verification_expires_at` ON `auth_platform_verification` (`expires_at`);

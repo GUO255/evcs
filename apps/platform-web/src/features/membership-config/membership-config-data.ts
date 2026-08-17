@@ -1,0 +1,107 @@
+import type {
+  MembershipBenefit,
+  MembershipProduct,
+  MembershipStationPrice,
+} from './membership-config-types'
+
+export const initialMembershipProducts = [
+  {
+    id: 'membership-product-monthly',
+    imageUrl: '/product-images/membership-card.jpg',
+    name: '连续包月',
+    type: 'auto-renew',
+    salePrice: 1.9,
+    originalPrice: 9.9,
+    renewalPrice: 9.9,
+    durationDays: 30,
+    marketingLabel: '首月特惠',
+    status: 'enabled',
+    sortOrder: 1,
+  },
+  {
+    id: 'membership-product-quarterly',
+    imageUrl: '/product-images/membership-card.jpg',
+    name: '单次季卡',
+    type: 'one-time',
+    salePrice: 21,
+    originalPrice: 49.8,
+    renewalPrice: 0,
+    durationDays: 90,
+    marketingLabel: '限时折扣',
+    status: 'enabled',
+    sortOrder: 2,
+  },
+  {
+    id: 'membership-product-yearly',
+    imageUrl: '/product-images/membership-card.jpg',
+    name: '单次年卡',
+    type: 'one-time',
+    salePrice: 60,
+    originalPrice: 168,
+    renewalPrice: 0,
+    durationDays: 365,
+    marketingLabel: '限时折扣',
+    status: 'enabled',
+    sortOrder: 3,
+  },
+] as const satisfies readonly MembershipProduct[]
+
+export const initialMembershipBenefits = [
+  {
+    id: 'membership-benefit-price',
+    name: '会员专享价',
+    icon: 'wallet',
+    summary: '会员充电享专属价格',
+    description: '指定场站充电服务费享会员专享价',
+    status: 'enabled',
+    sortOrder: 1,
+  },
+  {
+    id: 'membership-benefit-coupon',
+    name: '每月领券',
+    icon: 'ticket',
+    summary: '每月专享优惠券',
+    description: '每月可领取会员专属充电优惠券包',
+    status: 'enabled',
+    sortOrder: 2,
+  },
+  {
+    id: 'membership-benefit-friday',
+    name: '周五会员日',
+    icon: 'clock',
+    summary: '周五参与会员专属活动',
+    description: '每周五开放会员专属抽奖及限量券包活动',
+    status: 'enabled',
+    sortOrder: 3,
+  },
+  {
+    id: 'membership-benefit-service',
+    name: '专属客服',
+    icon: 'headset',
+    summary: '会员服务优先响应',
+    description: '会员咨询进入专属客服优先响应队列',
+    status: 'enabled',
+    sortOrder: 4,
+  },
+] as const satisfies readonly MembershipBenefit[]
+
+export const initialMembershipStationPrices = [
+  {
+    id: 'membership-price-zhengzhou-wanda',
+    city: '郑州市',
+    stationName: '郑州高新万达充电站',
+    originalPrice: 1.92,
+    memberPrice: 1.744,
+    status: 'enabled',
+    sortOrder: 1,
+  },
+  {
+    id: 'membership-price-zhengzhou-sports-center',
+    city: '郑州市',
+    stationName: '郑州奥体中心充电站',
+    originalPrice: 1.63,
+    memberPrice: 1.39,
+    status: 'enabled',
+    sortOrder: 2,
+  },
+] as const satisfies readonly MembershipStationPrice[]

@@ -1,0 +1,83 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1783786344135,
+      "tag": "0000_yummy_bug",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1783786618152,
+      "tag": "0001_acoustic_sunfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1783786745767,
+      "tag": "0002_shiny_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1783787364234,
+      "tag": "0003_jittery_paladin",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1783790028991,
+      "tag": "0004_curious_zaladane",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1783790078107,
+      "tag": "0005_thick_black_widow",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1783790468331,
+      "tag": "0006_outstanding_thanos",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1783790924631,
+      "tag": "0007_typical_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1783844831285,
+      "tag": "0008_fancy_cammi",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1784271147209,
+      "tag": "0009_unique_rocket_racer",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1784274483765,
+      "tag": "0010_living_silver_sable",
+      "breakpoints": true
+    }
+  ]
+}

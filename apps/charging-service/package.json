@@ -1,0 +1,11 @@
+{
+  "name": "@evcs/charging-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests"
+  }
+}

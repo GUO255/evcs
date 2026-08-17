@@ -1,0 +1,168 @@
+.orders-page {
+  min-height: 100vh;
+  padding-bottom: 120px;
+  background: #f4f7fb;
+}
+
+.orders-hero {
+  padding: 30px 28px;
+  background: linear-gradient(160deg, #0f8f6d, #0aa679);
+  color: #ffffff;
+}
+
+.orders-hero-title {
+  display: block;
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.orders-hero-sub {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 22px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 22px 24px 0;
+}
+
+.filter-tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 24px;
+  text-align: center;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+}
+
+.filter-tab-active {
+  background: #0aa679;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.order-list {
+  margin: 18px 24px 0;
+}
+
+.order-card {
+  margin-bottom: 16px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.order-code {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.order-station {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 22px;
+}
+
+.order-status {
+  padding: 6px 12px;
+  font-size: 20px;
+  border-radius: 999px;
+}
+
+.order-status-pending-payment {
+  background: #fff8ec;
+  color: #b45309;
+}
+
+.order-status-paid {
+  background: #e7f8f2;
+  color: #06785a;
+}
+
+.order-status-refunded {
+  background: #eef2f7;
+  color: #7b8494;
+}
+
+.order-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.order-time,
+.order-energy {
+  color: #7b8494;
+  font-size: 22px;
+}
+
+.order-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.order-amount-label {
+  color: #7b8494;
+  font-size: 22px;
+}
+
+.order-fee {
+  color: #0aa679;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.pay-button,
+.refund-button {
+  margin-top: 18px;
+  border-radius: 16px;
+  font-size: 26px;
+  font-weight: 700;
+  padding: 12px;
+}
+
+.pay-button {
+  background: linear-gradient(135deg, #10b981, #0aa679);
+  color: #ffffff;
+}
+
+.refund-button {
+  background: #fff8ec;
+  color: #b45309;
+}
+
+.empty-state {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  display: block;
+  font-size: 64px;
+}
+
+.empty-text {
+  display: block;
+  margin-top: 16px;
+  color: #9ca3af;
+  font-size: 26px;
+}

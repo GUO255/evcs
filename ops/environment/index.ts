@@ -1,0 +1,37 @@
+export {
+  activeEnvironmentRoles,
+  aliasesByRole,
+  applicationEnvironmentPrefixes,
+  deploymentVariables,
+  environmentProfiles,
+  environmentRoles,
+  environmentVariables,
+  environmentValueForRole,
+  keysByRole,
+  environmentOutputKeysForRole,
+  isUnauthorizedApplicationEnvironmentKey,
+  legacyEnvironmentRoles,
+  platformOwnedEnvironmentKeys,
+  type DeploymentVariableDefinition,
+  type EnvironmentProfile,
+  type EnvironmentRole,
+  type EnvironmentSource,
+  type EnvironmentValidation,
+  type EnvironmentVariableDefinition,
+  type EnvironmentValue,
+} from "./schema";
+export {
+  assertRoleEnvironment,
+  parseEnvironmentFile,
+  validateRoleEnvironment,
+  type EnvironmentValidationIssue,
+} from "./parser";
+export {
+  atomicWrite,
+  expectedEnvironmentFiles,
+  materializeRoleEnvironment,
+  renderDeploymentExample,
+  renderExternalExample,
+  renderRoleSnapshot,
+  renderStableProfile,
+} from "./generator";
