@@ -7,7 +7,7 @@
 #   3. 在流水线「触发设置」中按分支绑定：
 #         dev  分支  → 触发本项目  → deploy@dev 主机组
 #         test 分支  → 触发本项目  → deploy@test 主机组
-#        main 分支或 release 标签 → 触发本项目 → deploy@prod 主机组
+#        master 分支或 release 标签 → 触发本项目 → deploy@prod 主机组
 #   4. 在各主机上放好 ops/gitee-deploy/.env.<env>，配置仓库 git 凭据，并安装 bun/docker。
 #
 # 触发后，deploy@host 会在目标主机执行 ops/gitee-deploy/deploy.sh <env>。

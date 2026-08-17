@@ -14,7 +14,7 @@ ENV_NAME="${1:?usage: deploy.sh <dev|test|prod>}"
 case "$ENV_NAME" in
   dev)  ENV_BRANCH="${ENV_NAME}" ;;
   test) ENV_BRANCH="${ENV_NAME}" ;;
-  prod) ENV_BRANCH="main"        ;;
+  prod) ENV_BRANCH="master"      ;;
   *)    echo "unsupported env: $ENV_NAME (expected dev|test|prod)" >&2; exit 1 ;;
 esac
 

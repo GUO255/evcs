@@ -1,0 +1,137 @@
+# ===========================================================================
+# EVCS GitHub Actions 流水线：dev / test / prod 三环境一键部署
+#
+# 分支触发：
+#   dev  -> 自动部署到 dev 环境
+#   test -> 自动部署到 test 环境
+#   main -> 需要 production environment 人工审批后部署到 prod
+#
+# 需要配置的 GitHub Secrets（Settings -> Secrets and variables -> Actions）：
+#   DEV_HOST            dev 环境主机 IP 或域名
+#   DEV_USER            SSH 用户名
+#   DEV_SSH_KEY         SSH 私钥
+#   DEV_SSH_PORT        SSH 端口（可选，默认 22）
+#   DEV_WORK_DIR        部署目录（可选，默认 /opt/evcs-dev）
+#
+#   TEST_HOST / TEST_USER / TEST_SSH_KEY / TEST_SSH_PORT / TEST_WORK_DIR
+#   PROD_HOST / PROD_USER / PROD_SSH_KEY / PROD_SSH_PORT / PROD_WORK_DIR
+#
+# 各主机上需提前准备：
+#   - git 凭据（能拉取 GitHub 仓库）
+#   - bun, docker, docker compose
+#   - ops/gitee-deploy/.env.<env> 环境变量文件（同 Gitee Go 方案）
+#
+# 部署入口脚本复用：ops/gitee-deploy/deploy.sh
+# ===========================================================================
+name: evcs-deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '部署环境'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+
+jobs:
+  # ---- 环境矩阵解析 ----
+  resolve-env:
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.set.outputs.env_name }}
+      host: ${{ steps.set.outputs.host }}
+      user: ${{ steps.set.outputs.user }}
+      ssh_key: ${{ steps.set.outputs.ssh_key }}
+      ssh_port: ${{ steps.set.outputs.ssh_port }}
+      work_dir: ${{ steps.set.outputs.work_dir }}
+    steps:
+      - name: 解析部署环境
+        id: set
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ENV_NAME="${{ github.event.inputs.environment }}"
+          else
+            ENV_NAME="${{ github.ref_name }}"
+            if [ "$ENV_NAME" = "master" ]; then
+              ENV_NAME="prod"
+            fi
+          fi
+          echo "env_name=$ENV_NAME" >> $GITHUB_OUTPUT
+
+          case "$ENV_NAME" in
+            dev)
+              echo "host=${{ secrets.DEV_HOST }}" >> $GITHUB_OUTPUT
+              echo "user=${{ secrets.DEV_USER }}" >> $GITHUB_OUTPUT
+              echo "ssh_key=${{ secrets.DEV_SSH_KEY }}" >> $GITHUB_OUTPUT
+              echo "ssh_port=${{ secrets.DEV_SSH_PORT || '22' }}" >> $GITHUB_OUTPUT
+              echo "work_dir=${{ secrets.DEV_WORK_DIR || '/opt/evcs-dev' }}" >> $GITHUB_OUTPUT
+              ;;
+            test)
+              echo "host=${{ secrets.TEST_HOST }}" >> $GITHUB_OUTPUT
+              echo "user=${{ secrets.TEST_USER }}" >> $GITHUB_OUTPUT
+              echo "ssh_key=${{ secrets.TEST_SSH_KEY }}" >> $GITHUB_OUTPUT
+              echo "ssh_port=${{ secrets.TEST_SSH_PORT || '22' }}" >> $GITHUB_OUTPUT
+              echo "work_dir=${{ secrets.TEST_WORK_DIR || '/opt/evcs-test' }}" >> $GITHUB_OUTPUT
+              ;;
+            prod)
+              echo "host=${{ secrets.PROD_HOST }}" >> $GITHUB_OUTPUT
+              echo "user=${{ secrets.PROD_USER }}" >> $GITHUB_OUTPUT
+              echo "ssh_key=${{ secrets.PROD_SSH_KEY }}" >> $GITHUB_OUTPUT
+              echo "ssh_port=${{ secrets.PROD_SSH_PORT || '22' }}" >> $GITHUB_OUTPUT
+              echo "work_dir=${{ secrets.PROD_WORK_DIR || '/opt/evcs-prod' }}" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+  # ---- 部署任务 ----
+  deploy:
+    needs: resolve-env
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.resolve-env.outputs.env_name }}
+      url: http://${{ needs.resolve-env.outputs.host }}:${{ needs.resolve-env.outputs.env_name == 'prod' && '80' || (needs.resolve-env.outputs.env_name == 'test' && '8082' || '8081') }}
+    if: |
+      always() &&
+      needs.resolve-env.result == 'success' &&
+      needs.resolve-env.outputs.host != '' &&
+      needs.resolve-env.outputs.ssh_key != ''
+    steps:
+      - name: 一键部署到 ${{ needs.resolve-env.outputs.env_name }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ needs.resolve-env.outputs.host }}
+          username: ${{ needs.resolve-env.outputs.user }}
+          key: ${{ needs.resolve-env.outputs.ssh_key }}
+          port: ${{ needs.resolve-env.outputs.ssh_port }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            ENV_NAME="${{ needs.resolve-env.outputs.env_name }}"
+            WORK_DIR="${{ needs.resolve-env.outputs.work_dir }}"
+
+            # 若目录不存在则克隆仓库
+            if [ ! -d "$WORK_DIR/.git" ]; then
+              mkdir -p "$WORK_DIR"
+              git clone "${{ github.server_url }}/${{ github.repository }}.git" "$WORK_DIR"
+            fi
+
+            cd "$WORK_DIR"
+            git fetch origin --prune
+            git checkout "${{ github.ref_name }}"
+            git pull origin "${{ github.ref_name }}"
+
+            bash ops/gitee-deploy/deploy.sh "$ENV_NAME"
+
+      - name: 部署结果通知
+        if: always()
+        run: |
+          echo "部署到 ${{ needs.resolve-env.outputs.env_name }} 完成，状态: ${{ job.status }}"
